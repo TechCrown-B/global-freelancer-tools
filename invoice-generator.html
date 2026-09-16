@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Invoice Generator | Global Freelancer Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">Global Freelancer Tools</div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="invoice-generator.html">Invoice Generator</a>
+    </nav>
+</header>
+
+<main class="invoice-page">
+
+    <section class="invoice-header">
+        <h1>Free Invoice Generator</h1>
+        <p>Create professional invoices for your international clients in seconds.</p>
+    </section>
+
+    <section class="invoice-form">
+
+        <h2>Invoice Details</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="businessName">Your Business Name *</label>
+                <input type="text" id="businessName" placeholder="e.g. TechCrown Solutions">
+            </div>
+
+            <div class="form-group">
+                <label for="clientName">Client Name *</label>
+                <input type="text" id="clientName" placeholder="e.g. John Smith">
+            </div>
+
+            <div class="form-group">
+                <label for="clientEmail">Client Email</label>
+                <input type="email" id="clientEmail" placeholder="client@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="invoiceNumber">Invoice Number</label>
+                <input type="text" id="invoiceNumber">
+            </div>
+
+            <div class="form-group">
+                <label for="invoiceDate">Invoice Date *</label>
+                <input type="date" id="invoiceDate">
+            </div>
+
+            <div class="form-group">
+                <label for="dueDate">Due Date</label>
+                <input type="date" id="dueDate">
+            </div>
+
+            <div class="form-group">
+                <label for="currency">Currency</label>
+                <select id="currency">
+                    <option value="USD">$ USD</option>
+                    <option value="EUR">€ EUR</option>
+                    <option value="GBP">£ GBP</option>
+                    <option value="CAD">$ CAD</option>
+                    <option value="AUD">$ AUD</option>
+                    <option value="INR">₹ INR</option>
+                </select>
+            </div>
+
+        </div>
+
+        <h2 class="section-title">Invoice Items</h2>
+
+        <div class="items-table-wrapper">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody id="itemsBody">
+                    <tr class="item-row">
+                        <td>
+                            <input
+                                type="text"
+                                class="item-description"
+                                placeholder="e.g. Website Development"
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                class="item-quantity"
+                                value="1"
+                                min="1"
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                class="item-rate"
+                                placeholder="0.00"
+                                min="0"
+                                step="0.01"
+                            >
+                        </td>
+
+                        <td class="item-total">0.00</td>
+
+                        <td>
+                            <button class="remove-item-btn" onclick="removeItem(this)">
+                                ×
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button class="add-item-btn" onclick="addItem()">
+            + Add Item
+        </button>
+
+        <div class="calculation-grid">
+
+            <div class="form-group">
+                <label for="discount">Discount (%)</label>
+                <input
+                    type="number"
+                    id="discount"
+                    value="0"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="tax">Tax (%)</label>
+                <input
+                    type="number"
+                    id="tax"
+                    value="0"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                >
+            </div>
+
+        </div>
+
+        <div class="form-group full-width">
+            <label for="paymentTerms">Payment Terms</label>
+            <input
+                type="text"
+                id="paymentTerms"
+                placeholder="e.g. Payment due within 15 days"
+            >
+        </div>
+
+        <div class="form-group full-width">
+            <label for="notes">Additional Notes</label>
+            <textarea
+                id="notes"
+                rows="4"
+                placeholder="Thank you for your business."
+            ></textarea>
+        </div>
+
+        <button class="generate-btn" onclick="generateInvoice()">
+            Generate Invoice Preview
+        </button>
+
+    </section>
+
+    <section class="invoice-preview">
+
+        <div class="preview-top">
+            <div>
+                <h2>INVOICE</h2>
+                <h3 id="previewBusinessName">Your Business Name</h3>
+            </div>
+
+            <div class="preview-invoice-meta">
+                <p>
+                    <strong>Invoice #:</strong>
+                    <span id="previewInvoiceNumber">---</span>
+                </p>
+
+                <p>
+                    <strong>Invoice Date:</strong>
+                    <span id="previewInvoiceDate">---</span>
+                </p>
+
+                <p>
+                    <strong>Due Date:</strong>
+                    <span id="previewDueDate">---</span>
+                </p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="bill-section">
+            <div>
+                <h4>BILL TO</h4>
+                <p id="previewClientName">---</p>
+                <p id="previewClientEmail">---</p>
+            </div>
+        </div>
+
+        <div class="preview-items-wrapper">
+            <table class="preview-items-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Qty</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+
+                <tbody id="previewItemsBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="totals-section">
+
+            <div class="total-line">
+                <span>Subtotal</span>
+                <span>
+                    <span id="previewCurrency">$</span>
+                    <span id="previewSubtotal">0.00</span>
+                </span>
+            </div>
+
+            <div class="total-line">
+                <span>Discount</span>
+                <span>
+                    <span id="previewDiscount">0.00</span>
+                </span>
+            </div>
+
+            <div class="total-line">
+                <span>Tax</span>
+                <span>
+                    <span id="previewTax">0.00</span>
+                </span>
+            </div>
+
+            <div class="total-line grand-total">
+                <span>Total</span>
+                <span>
+                    <span id="previewTotal">0.00</span>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="preview-extra">
+
+            <div>
+                <h4>PAYMENT TERMS</h4>
+                <p id="previewPaymentTerms">---</p>
+            </div>
+
+            <div>
+                <h4>NOTES</h4>
+                <p id="previewNotes">---</p>
+            </div>
+
+        </div>
+
+        <button class="print-btn" onclick="printInvoice()">
+            Print / Save Invoice as PDF
+        </button>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 Global Freelancer Tools. All rights reserved.</p>
+</footer>
+
+<script>
+
+    const currencySymbols = {
+        USD: "$",
+        EUR: "€",
+        GBP: "£",
+        CAD: "$",
+        AUD: "$",
+        INR: "₹"
+    };
+
+    function generateInvoiceNumber() {
+        const randomNumber = Math.floor(1000 + Math.random() * 9000);
+        return "INV-" + randomNumber;
+    }
+
+    function setDefaultDates() {
+        const today = new Date();
+
+        const formattedToday = today.toISOString().split("T")[0];
+
+        document.getElementById("invoiceDate").value = formattedToday;
+
+        const dueDate = new Date();
+        dueDate.setDate(today.getDate() + 15);
+
+        document.getElementById("dueDate").value =
+            dueDate.toISOString().split("T")[0];
+
+        document.getElementById("invoiceNumber").value =
+            generateInvoiceNumber();
+    }
+
+    function addItem() {
+        const itemsBody = document.getElementById("itemsBody");
+
+        const row = document.createElement("tr");
+        row.className = "item-row";
+
+        row.innerHTML = `
+            <td>
+                <input
+                    type="text"
+                    class="item-description"
+                    placeholder="Service description"
+                >
+            </td>
+
+            <td>
+                <input
+                    type="number"
+                    class="item-quantity"
+                    value="1"
+                    min="1"
+                >
+            </td>
+
+            <td>
+                <input
+                    type="number"
+                    class="item-rate"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                >
+            </td>
+
+            <td class="item-total">0.00</td>
+
+            <td>
+                <button class="remove-item-btn" onclick="removeItem(this)">
+                    ×
+                </button>
+            </td>
+        `;
+
+        itemsBody.appendChild(row);
+    }
+
+    function removeItem(button) {
+        const rows = document.querySelectorAll(".item-row");
+
+        if (rows.length <= 1) {
+            alert("At least one invoice item is required.");
+            return;
+        }
+
+        button.closest("tr").remove();
+    }
+
+    function getInvoiceData() {
+        const currency = document.getElementById("currency").value;
+        const symbol = currencySymbols[currency];
+
+        const businessName =
+            document.getElementById("businessName").value.trim();
+
+        const clientName =
+            document.getElementById("clientName").value.trim();
+
+        const clientEmail =
+            document.getElementById("clientEmail").value.trim();
+
+        const invoiceNumber =
+            document.getElementById("invoiceNumber").value.trim();
+
+        const invoiceDate =
+            document.getElementById("invoiceDate").value;
+
+        const dueDate =
+            document.getElementById("dueDate").value;
+
+        const discountRate =
+            parseFloat(document.getElementById("discount").value) || 0;
+
+        const taxRate =
+            parseFloat(document.getElementById("tax").value) || 0;
+
+        const paymentTerms =
+            document.getElementById("paymentTerms").value.trim();
+
+        const notes =
+            document.getElementById("notes").value.trim();
+
+        const rows = document.querySelectorAll(".item-row");
+
+        const items = [];
+
+        rows.forEach(row => {
+            const description =
+                row.querySelector(".item-description").value.trim();
+
+            const quantity =
+                parseFloat(row.querySelector(".item-quantity").value) || 0;
+
+            const rate =
+                parseFloat(row.querySelector(".item-rate").value) || 0;
+
+            const amount = quantity * rate;
+
+            row.querySelector(".item-total").textContent =
+                amount.toFixed(2);
+
+            if (description || rate > 0) {
+                items.push({
+                    description: description || "Service",
+                    quantity,
+                    rate,
+                    amount
+                });
+            }
+        });
+
+        const subtotal = items.reduce(
+            (sum, item) => sum + item.amount,
+            0
+        );
+
+        const discountAmount = subtotal * discountRate / 100;
+
+        const taxableAmount = subtotal - discountAmount;
+
+        const taxAmount = taxableAmount * taxRate / 100;
+
+        const total = taxableAmount + taxAmount;
+
+        return {
+            currency,
+            symbol,
+            businessName,
+            clientName,
+            clientEmail,
+            invoiceNumber,
+            invoiceDate,
+            dueDate,
+            discountAmount,
+            taxAmount,
+            subtotal,
+            total,
+            paymentTerms,
+            notes,
+            items
+        };
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) {
+            return "---";
+        }
+
+        const date = new Date(dateString + "T00:00:00");
+
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+    }
+
+    function generateInvoice() {
+        const data = getInvoiceData();
+
+        if (!data.businessName || !data.clientName || !data.invoiceDate) {
+            alert("Please fill in Business Name, Client Name, and Invoice Date.");
+            return;
+        }
+
+        if (data.items.length === 0) {
+            alert("Please add at least one invoice item with an amount.");
+            return;
+        }
+
+        document.getElementById("previewBusinessName").textContent =
+            data.businessName;
+
+        document.getElementById("previewClientName").textContent =
+            data.clientName;
+
+        document.getElementById("previewClientEmail").textContent =
+            data.clientEmail || "";
+
+        document.getElementById("previewInvoiceNumber").textContent =
+            data.invoiceNumber || "---";
+
+        document.getElementById("previewInvoiceDate").textContent =
+            formatDate(data.invoiceDate);
+
+        document.getElementById("previewDueDate").textContent =
+            formatDate(data.dueDate);
+
+        document.getElementById("previewCurrency").textContent =
+            data.symbol;
+
+        document.getElementById("previewSubtotal").textContent =
+            data.subtotal.toFixed(2);
+
+        document.getElementById("previewDiscount").textContent =
+            data.symbol + data.discountAmount.toFixed(2);
+
+        document.getElementById("previewTax").textContent =
+            data.symbol + data.taxAmount.toFixed(2);
+
+        document.getElementById("previewTotal").textContent =
+            data.symbol + data.total.toFixed(2);
+
+        document.getElementById("previewPaymentTerms").textContent =
+            data.paymentTerms || "---";
+
+        document.getElementById("previewNotes").textContent =
+            data.notes || "---";
+
+        const previewItemsBody =
+            document.getElementById("previewItemsBody");
+
+        previewItemsBody.innerHTML = "";
+
+        data.items.forEach(item => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${escapeHtml(item.description)}</td>
+                <td>${item.quantity}</td>
+                <td>${data.symbol}${item.rate.toFixed(2)}</td>
+                <td>${data.symbol}${item.amount.toFixed(2)}</td>
+            `;
+
+            previewItemsBody.appendChild(row);
+        });
+
+        document.querySelector(".invoice-preview").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function printInvoice() {
+        window.print();
+    }
+
+    document.addEventListener("input", function(event) {
+        if (
+            event.target.classList.contains("item-quantity") ||
+            event.target.classList.contains("item-rate")
+        ) {
+            const row = event.target.closest("tr");
+
+            const quantity =
+                parseFloat(row.querySelector(".item-quantity").value) || 0;
+
+            const rate =
+                parseFloat(row.querySelector(".item-rate").value) || 0;
+
+            row.querySelector(".item-total").textContent =
+                (quantity * rate).toFixed(2);
+        }
+    });
+
+    setDefaultDates();
+
+</script>
+
+</body>
+</html>
